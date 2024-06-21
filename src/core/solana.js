@@ -32,29 +32,37 @@ export class Solana {
   }
 
   async checkBalance() {
-    this.balance =
-      (await this.connection.getBalance(this.address)) / LAMPORTS_PER_SOL;
+    try {
+      this.balance =
+        (await this.connection.getBalance(this.address)) / LAMPORTS_PER_SOL;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async sendSolToAddress() {
-    const destAddress =
-      Config.destAddress[Helper.random(0, Config.destAddress.length - 1)] ??
-      this.address;
-    const amount = Config.sendAmount;
-    console.log(`Sending ${amount} to ${destAddress}`);
-    const transferTransaction = new Transaction().add(
-      SystemProgram.transfer({
-        fromPubkey: this.address,
-        toPubkey: destAddress,
-        lamports: amount * LAMPORTS_PER_SOL,
-      })
-    );
-    // console.log("Signing TX");
-    const tx = await sendAndConfirmTransaction(
-      this.connection,
-      transferTransaction,
-      [this.wallet]
-    );
-    console.log(`Tx Url: https://explorer.sonic.game/tx/${tx}`);
+    try {
+      const destAddress =
+        Config.destAddress[Helper.random(0, Config.destAddress.length - 1)] ??
+        this.address;
+      const amount = Config.sendAmount;
+      console.log(`Sending ${amount} to ${destAddress}`);
+      const transferTransaction = new Transaction().add(
+        SystemProgram.transfer({
+          fromPubkey: this.address,
+          toPubkey: destAddress,
+          lamports: amount * LAMPORTS_PER_SOL,
+        })
+      );
+      // console.log("Signing TX");
+      const tx = await sendAndConfirmTransaction(
+        this.connection,
+        transferTransaction,
+        [this.wallet]
+      );
+      console.log(`Tx Url: https://explorer.sonic.game/tx/${tx}`);
+    } catch (error) {
+      throw error;
+    }
   }
 }

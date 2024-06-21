@@ -40,6 +40,8 @@ async function process() {
     const randDelay = Helper.random(6 * 1000 * 10, 6 * 1000 * 20); //random delay 10-20 minutes
     console.log(`Restarting bot after ${randDelay / 10000} Minutes`);
     await process();
+  } else {
+    await process();
   }
 }
 
