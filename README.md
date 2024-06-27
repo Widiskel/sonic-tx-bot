@@ -20,6 +20,7 @@ Sonic TX bot for adding more tx on chain
 - run `cd sonic-tx-bot`
 - run `npm install`
 - run `cp account_tmp.js account.js`
+- fill up account.js ```nano account.js``` fill with your account private key
 
 ## CONFIGURATION
 
