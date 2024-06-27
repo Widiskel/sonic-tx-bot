@@ -2,6 +2,12 @@
 
 Sonic TX bot for adding more tx on chain
 
+## BOT FEATURE
+
+- Auto Check In
+- Auto TX until 100 Times
+- Auto Claim TX Milestone
+
 ## PREREQUISITE
 
 - Git
@@ -19,12 +25,10 @@ im adding config file for you to configure, open `src config/config.js` and adju
 
 ```js
 sendAmount = 0.0001; //amount to send in sol
-destAddress = addressList; //address destination list
-massTxCount = 100; //tx count
-repeat = false; // for keep repeating the boot after all account processed
+maxErrorCount = 3; //max error retry
 ```
 
-to configure destination address list, open `src config/address_list.js` adjust the list with yours. the bot will pick random destination address from that list to send token.
+to configure destination address list, open `src config/address_list.js` adjust the list with yours. the bot will pick random destination address from that list to send token or it will send to its own wallet address.
 
 ## CONTRIBUTE
 

@@ -4,7 +4,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "start" : "node index.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -12,6 +12,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@solana/web3.js": "^1.93.0"
+    "@solana/web3.js": "^1.93.0",
+    "tweetnacl": "^1.0.3",
+    "winston": "^3.13.0"
   }
 }
