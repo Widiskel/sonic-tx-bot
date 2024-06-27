@@ -422,3 +422,48 @@
 2024-06-27 13:00:53 [[32minfo[39m]: Request Body : {"stage":3}
 2024-06-27 13:00:53 [[32minfo[39m]: Response : 400 Bad Request
 2024-06-27 13:00:53 [[32minfo[39m]: Response Data : {"code":100015,"message":"interact rewards already claimed","status":"fail","data":null}
+2024-06-27 13:13:37 [[32minfo[39m]: SONIC AUTO TX BOT STARTED
+2024-06-27 13:13:37 [[32minfo[39m]: Connecting to Sonic Odyssey
+2024-06-27 13:13:37 [[32minfo[39m]: GET : https://odyssey-api.sonic.game/auth/sonic/challenge?wallet=3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN
+2024-06-27 13:13:37 [[32minfo[39m]: Request Header : {"Accept":"*/*","Accept-Language":"en-GB,en-US;q=0.9,en;q=0.8","Content-Type":"application/json","User-Agent":"Mozilla/5.0 (Linux; Android 10; VOG-L29) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.6422.113 Mobile Safari/537.36 OPR/76.2.4027.73374"}
+2024-06-27 13:13:37 [[32minfo[39m]: Request Body : null
+2024-06-27 13:13:38 [[32minfo[39m]: Response : 200 OK
+2024-06-27 13:13:38 [[32minfo[39m]: Response Data : {"code":0,"data":"Welcome to Sonic!\n\n\t\tClick \"Sign\" to sign in. No password needed!\n\t\tThis request will not trigger a blockchain transaction or cost any gas fees.\n\t\t\n\t\tYour authentication status will be reset after 24 hours.\n\t\t\n\t\tWallet address:\n\t\t3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN\n\t\t\n\t\tNonce:\n\t\tdtT71CSeYnKOZU-Y4KhkJ","status":"success","message":"success"}
+2024-06-27 13:13:38 [[32minfo[39m]: POST : https://odyssey-api.sonic.game/auth/sonic/authorize
+2024-06-27 13:13:38 [[32minfo[39m]: Request Header : {"Accept":"*/*","Accept-Language":"en-GB,en-US;q=0.9,en;q=0.8","Content-Type":"application/json","User-Agent":"Mozilla/5.0 (Linux; Android 10; VOG-L29) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.6422.113 Mobile Safari/537.36 OPR/76.2.4027.73374"}
+2024-06-27 13:13:38 [[32minfo[39m]: Request Body : {"address":"3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN","address_encoded":"Kta9KeRPB4pYDFJPM4Ld1t5VeqnJDJI6xZ6b3Wub0Xs=","signature":"QZiq1IssxbASYiw8gIuVRARCYwIv1xkURjQS5E08ZuuCM7jpGrFARDun6TstZnKi9YdO/jyA0+hXFjxRzST6BA=="}
+2024-06-27 13:13:39 [[32minfo[39m]: Response : 200 OK
+2024-06-27 13:13:39 [[32minfo[39m]: Response Data : {"code":0,"data":{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTAyOSwid2FsbGV0IjoiM3RFM0hzN1Ayd3VSeVZ4eU1EN0pTZjhKVEFtRWVrZE5zUVdxQW5heUUxQ04iLCJpbnZpdGF0aW9uX2NvZGUiOiJLYlpJUW0iLCJpYXQiOjE3MTk0Njg4MTksImV4cCI6MTcyNzI0NDgxOSwianRpIjoic29uaWNfYXV0aF91c2VyXzUwMjkifQ.gjSNzj8v3efBfQx_ZtT3KVf1gXw3TK43Z3MeLOqo5BY"},"status":"success","message":"success"}
+2024-06-27 13:13:39 [[32minfo[39m]: Connected to Sonic Odyssey
+2024-06-27 13:13:39 [[32minfo[39m]: GET : https://odyssey-api.sonic.game/user/transactions/state/daily
+2024-06-27 13:13:39 [[32minfo[39m]: Request Header : {"Accept":"*/*","Accept-Language":"en-GB,en-US;q=0.9,en;q=0.8","Content-Type":"application/json","User-Agent":"Mozilla/5.0 (Linux; Android 10; VOG-L29) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.6422.113 Mobile Safari/537.36 OPR/76.2.4027.73374","Authorization":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTAyOSwid2FsbGV0IjoiM3RFM0hzN1Ayd3VSeVZ4eU1EN0pTZjhKVEFtRWVrZE5zUVdxQW5heUUxQ04iLCJpbnZpdGF0aW9uX2NvZGUiOiJLYlpJUW0iLCJpYXQiOjE3MTk0Njg4MTksImV4cCI6MTcyNzI0NDgxOSwianRpIjoic29uaWNfYXV0aF91c2VyXzUwMjkifQ.gjSNzj8v3efBfQx_ZtT3KVf1gXw3TK43Z3MeLOqo5BY"}
+2024-06-27 13:13:39 [[32minfo[39m]: Request Body : null
+2024-06-27 13:13:42 [[32minfo[39m]: Response : 200 OK
+2024-06-27 13:13:42 [[32minfo[39m]: Response Data : {"code":0,"data":{"total_transactions":3,"stage_info":{"stage_1":{"claimed":false,"rewards":2,"quantity":10},"stage_2":{"claimed":false,"rewards":4,"quantity":50},"stage_3":{"claimed":false,"rewards":6,"quantity":100}}},"status":"success","message":"success"}
+2024-06-27 13:13:42 [[32minfo[39m]: Try to Check-in
+2024-06-27 13:13:42 [[32minfo[39m]: GET : https://odyssey-api.sonic.game/user/check-in/transaction
+2024-06-27 13:13:42 [[32minfo[39m]: Request Header : {"Accept":"*/*","Accept-Language":"en-GB,en-US;q=0.9,en;q=0.8","Content-Type":"application/json","User-Agent":"Mozilla/5.0 (Linux; Android 10; VOG-L29) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.6422.113 Mobile Safari/537.36 OPR/76.2.4027.73374","Authorization":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTAyOSwid2FsbGV0IjoiM3RFM0hzN1Ayd3VSeVZ4eU1EN0pTZjhKVEFtRWVrZE5zUVdxQW5heUUxQ04iLCJpbnZpdGF0aW9uX2NvZGUiOiJLYlpJUW0iLCJpYXQiOjE3MTk0Njg4MTksImV4cCI6MTcyNzI0NDgxOSwianRpIjoic29uaWNfYXV0aF91c2VyXzUwMjkifQ.gjSNzj8v3efBfQx_ZtT3KVf1gXw3TK43Z3MeLOqo5BY"}
+2024-06-27 13:13:42 [[32minfo[39m]: Request Body : null
+2024-06-27 13:13:42 [[32minfo[39m]: Response : 400 Bad Request
+2024-06-27 13:13:42 [[32minfo[39m]: Response Data : {"code":100013,"message":"current account already checked in","status":"fail","data":null}
+2024-06-27 13:13:42 [[32minfo[39m]: Sending 0.0001 to 3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN
+2024-06-27 13:13:42 [[32minfo[39m]: Execute Transaction {"recentBlockhash":null,"feePayer":null,"nonceInfo":null,"instructions":[{"keys":[{"pubkey":"3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN","isSigner":true,"isWritable":true},{"pubkey":"3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN","isSigner":false,"isWritable":true}],"programId":"11111111111111111111111111111111","data":[2,0,0,0,160,134,1,0,0,0,0,0]}],"signers":[]}
+2024-06-27 13:13:44 [[32minfo[39m]: Tx Url: https://explorer.sonic.game/tx/5JXAEcFCBSwVmCtrNAgszb3YoaxvHiPmt5dXngDvupF71jkWdHXfCkKrhqjQvVrWCCRqiKRssseCiph41WmAvFR1
+2024-06-27 13:13:48 [[32minfo[39m]: Sending 0.0001 to 3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN
+2024-06-27 13:13:48 [[32minfo[39m]: Execute Transaction {"recentBlockhash":null,"feePayer":null,"nonceInfo":null,"instructions":[{"keys":[{"pubkey":"3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN","isSigner":true,"isWritable":true},{"pubkey":"3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN","isSigner":false,"isWritable":true}],"programId":"11111111111111111111111111111111","data":[2,0,0,0,160,134,1,0,0,0,0,0]}],"signers":[]}
+2024-06-27 13:13:49 [[32minfo[39m]: Tx Url: https://explorer.sonic.game/tx/3Wupv8RpMKZfHtGUXdQ62h2R1iEktiRTajbns4f62z6D9ZRa2xLtrVxRv2zYAB3nBsCHfVEov23JTGxiVSbJpVn5
+2024-06-27 13:13:53 [[32minfo[39m]: Sending 0.0001 to 3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN
+2024-06-27 13:13:53 [[32minfo[39m]: Execute Transaction {"recentBlockhash":null,"feePayer":null,"nonceInfo":null,"instructions":[{"keys":[{"pubkey":"3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN","isSigner":true,"isWritable":true},{"pubkey":"3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN","isSigner":false,"isWritable":true}],"programId":"11111111111111111111111111111111","data":[2,0,0,0,160,134,1,0,0,0,0,0]}],"signers":[]}
+2024-06-27 13:13:55 [[32minfo[39m]: Tx Url: https://explorer.sonic.game/tx/2fBg8RRoWrLvS6qs3zuatfceBJ8RgrS9DkXtNG2jEoXsA5NhbQNwgMcoBX7m4Zzeqt9yq5zP8QdES82uGzjESg95
+2024-06-27 13:13:57 [[32minfo[39m]: Sending 0.0001 to 3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN
+2024-06-27 13:13:57 [[32minfo[39m]: Execute Transaction {"recentBlockhash":null,"feePayer":null,"nonceInfo":null,"instructions":[{"keys":[{"pubkey":"3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN","isSigner":true,"isWritable":true},{"pubkey":"3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN","isSigner":false,"isWritable":true}],"programId":"11111111111111111111111111111111","data":[2,0,0,0,160,134,1,0,0,0,0,0]}],"signers":[]}
+2024-06-27 13:13:59 [[32minfo[39m]: Tx Url: https://explorer.sonic.game/tx/4UDfEVCDU567mjg5SDnxeScjirguEToGA8PDDgL8DJq62Ruu1pYYhngkSUxD7uvXEzydMnuM3eSCQAjR94MZVMMD
+2024-06-27 13:14:02 [[32minfo[39m]: Sending 0.0001 to 3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN
+2024-06-27 13:14:02 [[32minfo[39m]: Execute Transaction {"recentBlockhash":null,"feePayer":null,"nonceInfo":null,"instructions":[{"keys":[{"pubkey":"3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN","isSigner":true,"isWritable":true},{"pubkey":"3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN","isSigner":false,"isWritable":true}],"programId":"11111111111111111111111111111111","data":[2,0,0,0,160,134,1,0,0,0,0,0]}],"signers":[]}
+2024-06-27 13:14:04 [[32minfo[39m]: Tx Url: https://explorer.sonic.game/tx/2JC1DTGhmWwKPMGtWX2HuGxdQ1Jt5j8rfX1rP5sKoyNADsrfJ5DJtwkcpx1pKMjp4sQtMXNTCB7mrTMKuZynhVza
+2024-06-27 13:14:06 [[32minfo[39m]: Sending 0.0001 to 3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN
+2024-06-27 13:14:06 [[32minfo[39m]: Execute Transaction {"recentBlockhash":null,"feePayer":null,"nonceInfo":null,"instructions":[{"keys":[{"pubkey":"3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN","isSigner":true,"isWritable":true},{"pubkey":"3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN","isSigner":false,"isWritable":true}],"programId":"11111111111111111111111111111111","data":[2,0,0,0,160,134,1,0,0,0,0,0]}],"signers":[]}
+2024-06-27 13:14:08 [[32minfo[39m]: Tx Url: https://explorer.sonic.game/tx/4MYNMDsJqZVtFR2Rb7NJGEE78HS4PuSqmPWEZY2tKsKx5g3MyLNdByhNgizLLdX1oFEbmvZDJZY8cGbgG25FAJvQ
+2024-06-27 13:14:13 [[32minfo[39m]: Sending 0.0001 to 3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN
+2024-06-27 13:14:13 [[32minfo[39m]: Execute Transaction {"recentBlockhash":null,"feePayer":null,"nonceInfo":null,"instructions":[{"keys":[{"pubkey":"3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN","isSigner":true,"isWritable":true},{"pubkey":"3tE3Hs7P2wuRyVxyMD7JSf8JTAmEekdNsQWqAnayE1CN","isSigner":false,"isWritable":true}],"programId":"11111111111111111111111111111111","data":[2,0,0,0,160,134,1,0,0,0,0,0]}],"signers":[]}
+2024-06-27 13:14:15 [[32minfo[39m]: Tx Url: https://explorer.sonic.game/tx/2NaZPmgkF92UKwCDXHnPAxuecUFtKMZmTPdGHJDUuBUSC1SUA2otqEZtrPJqHXkLSTKhckxVSk2nsK3Q2yVqQ7xg

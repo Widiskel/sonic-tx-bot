@@ -32,7 +32,7 @@ to configure destination address list, open `src config/address_list.js` adjust 
 
 ## HOW TO UPDATE
 
-to update just run `git pull` or if it failed because of unstaged commit, just run `git stash` and then `git pull`.
+to update just run `git pull` or if it failed because of unstaged commit, just run `git stash` and then `git pull`. after that do `npm install` or `npm update`.
 
 ## CONTRIBUTE
 
