@@ -30,6 +30,10 @@ maxErrorCount = 3; //max error retry
 
 to configure destination address list, open `src config/address_list.js` adjust the list with yours. the bot will pick random destination address from that list to send token or it will send to its own wallet address.
 
+## HOW TO UPDATE
+
+to update just run `git pull` or if it failed because of unstaged commit, just run `git stash` and then `git pull`.
+
 ## CONTRIBUTE
 
 Feel free to fork and contribute adding more feature thanks.
