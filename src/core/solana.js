@@ -6,6 +6,7 @@ import {
   Transaction,
   SystemProgram,
   sendAndConfirmTransaction,
+  sendAndConfirmRawTransaction,
 } from "@solana/web3.js";
 import { Helper } from "../utils/helper.js";
 import { Config } from "../config/config.js";
@@ -246,9 +247,10 @@ export class Solana extends API {
         if (data.code == 0) {
           const transactionBuffer = Buffer.from(data.data.hash, "base64");
           const transaction = Transaction.from(transactionBuffer);
-          console.log(transaction);
+          await transaction.partialSign(this.wallet);
 
           const tx = await this.doTx(transaction);
+          console.log(tx);
           await this.openMysteryBox(tx);
         } else {
           console.log(data.message);

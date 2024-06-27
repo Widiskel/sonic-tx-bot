@@ -114,6 +114,7 @@ async function process() {
 (async () => {
   console.log("Sonic Bot");
   console.log("By : Widiskel");
+  console.log("Note : Don't forget to run git pull to keep up-to-date");
   console.log();
   await process();
 })();
