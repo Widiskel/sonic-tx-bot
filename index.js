@@ -17,6 +17,9 @@ async function operation(acc) {
     console.log(`Balance         : ${solana.balance} SOL`);
     await solana.getDailyTx();
     console.log(`Daily TX        : ${solana.dailyTx.total_transactions}`);
+    await solana.getRewardInfo();
+    console.log(`Rings           : ${solana.reward.ring}`);
+    console.log(`Mystery Box     : ${solana.reward.ring_monitor}`);
 
     console.log();
     await solana.checkIn();
@@ -53,6 +56,13 @@ async function operation(acc) {
     for (const stage of claimableStage) {
       await solana.claimTxMilestone(stage);
     }
+    console.log();
+    // console.log(`Opening ${solana.reward.ring_monitor} Mystery box`);
+    // console.log(`Opening Mystery BOX`);
+    // logger.info(`Opening Mystery BOX`);
+    // for (let x = 0; x < solana.reward.ring_monitor; x++) {
+    //   await solana.claimMysteryBox();
+    // }
 
     console.log();
   } catch (error) {

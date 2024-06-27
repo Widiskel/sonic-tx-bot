@@ -102,6 +102,7 @@ export class Solana extends API {
     ]);
     console.log(`Tx Url: https://explorer.sonic.game/tx/${tx}`);
     logger.info(`Tx Url: https://explorer.sonic.game/tx/${tx}`);
+    return tx;
   }
 
   async sendSolToAddress() {
@@ -140,7 +141,7 @@ export class Solana extends API {
           const transactionBuffer = Buffer.from(data.data.hash, "base64");
           const transaction = Transaction.from(transactionBuffer);
 
-          await this.doTx(transaction);
+          const tx = await this.doTx(transaction);
           console.log(
             `Check-in Transaction Executed Successfully, continue with post check in process`
           );
@@ -174,6 +175,23 @@ export class Solana extends API {
       });
   }
 
+  async getRewardInfo() {
+    try {
+      await this.fetch("/user/rewards/info", "GET", this.token)
+        .then((data) => {
+          if (data.code == 0) {
+            this.reward = data.data;
+          } else {
+            throw new Error("Unable to get user reward info");
+          }
+        })
+        .catch((err) => {
+          throw err;
+        });
+    } catch (error) {
+      throw error;
+    }
+  }
   async getDailyTx() {
     try {
       await this.fetch(
@@ -200,17 +218,56 @@ export class Solana extends API {
   async claimTxMilestone(stage) {
     console.log(`Claiming Tx Milestone Stage ${stage}`);
     logger.info(`Claiming Tx Milestone Stage ${stage}`);
-    const response = await this.fetch(
-      `/user/transactions/rewards/claim`,
-      "POST",
-      this.token,
-      { stage: stage }
-    )
+    await this.fetch(`/user/transactions/rewards/claim`, "POST", this.token, {
+      stage: stage,
+    })
       .then((data) => {
         if (data.code != 0) {
           console.log(`Tx milestone Stage ${stage} Already Claimed`);
         } else {
           console.log(`Tx milestone Stage ${stage} Claimed Successfully`);
+        }
+      })
+      .catch((err) => {
+        throw err;
+      });
+  }
+
+  async claimMysteryBox() {
+    console.log(`Building Tx`);
+    logger.info(`Building TX`);
+    await this.fetch(
+      "/user/rewards/mystery-box/build-tx",
+      "GET",
+      this.token,
+      undefined
+    )
+      .then(async (data) => {
+        if (data.code == 0) {
+          const transactionBuffer = Buffer.from(data.data.hash, "base64");
+          const transaction = Transaction.from(transactionBuffer);
+          console.log(transaction);
+
+          const tx = await this.doTx(transaction);
+          await this.openMysteryBox(tx);
+        }
+      })
+      .catch((err) => {
+        throw err;
+      });
+  }
+
+  async openMysteryBox(hash) {
+    console.log(`Opening Mystery Box`);
+    logger.info(`Opening Mystery Box`);
+    await this.fetch("/user/rewards/mystery-box/open", "POST", this.token, {
+      hash: hash,
+    })
+      .then(async (data) => {
+        if (data.code == 0) {
+          console.log(
+            `Successfully open mystery box got ${data.data.amount} RING`
+          );
         }
       })
       .catch((err) => {
