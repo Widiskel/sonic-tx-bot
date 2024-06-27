@@ -250,6 +250,9 @@ export class Solana extends API {
 
           const tx = await this.doTx(transaction);
           await this.openMysteryBox(tx);
+        } else {
+          console.log(data.message);
+          logger.error(data.message);
         }
       })
       .catch((err) => {
@@ -268,6 +271,9 @@ export class Solana extends API {
           console.log(
             `Successfully open mystery box got ${data.data.amount} RING`
           );
+        } else {
+          console.log(data.message);
+          logger.error(data.message);
         }
       })
       .catch((err) => {
