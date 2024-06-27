@@ -134,12 +134,7 @@ export class Solana extends API {
   async checkIn() {
     console.log(`Try to Check-in`);
     logger.info(`Try to Check-in`);
-    const response = await this.fetch(
-      `/user/check-in/transaction`,
-      "GET",
-      this.token,
-      null
-    )
+    await this.fetch(`/user/check-in/transaction`, "GET", this.token, null)
       .then(async (data) => {
         if (data.code == 0) {
           const transactionBuffer = Buffer.from(data.data.hash, "base64");
@@ -164,7 +159,7 @@ export class Solana extends API {
   }
 
   async postCheckIn(tx) {
-    const response = await this.fetch(`/user/check-in`, "POST", this.token, {
+    await this.fetch(`/user/check-in`, "POST", this.token, {
       hash: tx,
     })
       .then((data) => {
@@ -181,7 +176,7 @@ export class Solana extends API {
 
   async getDailyTx() {
     try {
-      const response = await this.fetch(
+      await this.fetch(
         `/user/transactions/state/daily`,
         "GET",
         this.token,
