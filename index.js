@@ -28,7 +28,7 @@ async function operation(acc) {
     if (100 - solana.dailyTx.total_transactions > 0) {
       console.log(`Begin Mass TX ${100 - solana.dailyTx.total_transactions} x`);
       console.log();
-      while (solana.dailyTx.total_transactions <= 100) {
+      while (solana.dailyTx.total_transactions <= 105) {
         await solana.sendSolToAddress();
 
         console.log(`Balance         : ${solana.balance} SOL`);
