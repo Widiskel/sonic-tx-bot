@@ -83,7 +83,7 @@ async function operation(acc) {
 const maxError = Config.maxErrorCount;
 var currentError = 0;
 /** Processing Bot */
-async function process() {
+async function processBot() {
   logger.info(`SONIC AUTO TX BOT STARTED`);
   for (const acc of account) {
     currentError = 0;
@@ -111,10 +111,15 @@ async function process() {
   logger.info(`SONIC AUTO TX BOT FINISHED`);
 }
 
+process.on("unhandledRejection", (reason) => {
+  logger.error("Unhandled Rejection :", reason);
+  console.error("Unhandled Rejection :", reason);
+});
+
 (async () => {
   console.log("Sonic Bot");
   console.log("By : Widiskel");
   console.log("Note : Don't forget to run git pull to keep up-to-date");
   console.log();
-  await process();
+  await processBot();
 })();

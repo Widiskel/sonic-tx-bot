@@ -95,15 +95,20 @@ export class Solana extends API {
     }
   }
 
-  /** @param {Transaction} trans  */
+  /** @param {Transaction} trans */
   async doTx(trans) {
-    logger.info(`Execute Transaction ${JSON.stringify(trans)}`);
-    const tx = await sendAndConfirmTransaction(this.connection, trans, [
-      this.wallet,
-    ]);
-    console.log(`Tx Url: https://explorer.sonic.game/tx/${tx}`);
-    logger.info(`Tx Url: https://explorer.sonic.game/tx/${tx}`);
-    return tx;
+    try {
+      logger.info(`Execute Transaction ${JSON.stringify(trans)}`);
+      const tx = await sendAndConfirmTransaction(this.connection, trans, [
+        this.wallet,
+      ]);
+      console.log(`Tx Url: https://explorer.sonic.game/tx/${tx}`);
+      logger.info(`Tx Url: https://explorer.sonic.game/tx/${tx}`);
+      return tx;
+    } catch (error) {
+      logger.error(`Transaction failed: ${error.message}`, error);
+      throw error;
+    }
   }
 
   async sendSolToAddress() {
