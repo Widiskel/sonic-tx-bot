@@ -20,7 +20,7 @@ Sonic TX bot for adding more tx on chain
 - run `cd sonic-tx-bot`
 - run `npm install`
 - run `cp account_tmp.js account.js`
-- fill up account.js ```nano account.js``` fill with your account private key
+- fill up account.js `nano account.js` fill with your account private key
 
 ## CONFIGURATION
 
@@ -28,7 +28,6 @@ im adding config file for you to configure, open `src config/config.js` and adju
 
 ```js
 sendAmount = 0.0001; //amount to send in sol
-maxErrorCount = 3; //max error retry
 ```
 
 to configure destination address list, open `src config/address_list.js` adjust the list with yours. the bot will pick random destination address from that list to send token or it will send to its own wallet address.
