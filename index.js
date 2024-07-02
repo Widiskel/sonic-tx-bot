@@ -67,7 +67,6 @@ async function processBot() {
   logger.info(`SONIC AUTO TX BOT STARTED`);
   console.info(`SONIC AUTO TX BOT STARTED`);
   const allPromise = account.map(async (pk) => {
-    console.log("Start " + pk);
     await operation(pk);
   });
 
