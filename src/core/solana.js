@@ -154,15 +154,14 @@ export class Solana extends API {
           logger.info(
             `Check-in Transaction Executed Successfully, continue with post check in process`
           );
-          twist.lo,
+          twist.log,
+            `Check-in Transaction Executed Successfully, continue with post check in process`,
             this.pk,
-            thisg(
-              `Check-in Transaction Executed Successfully, continue with post check in process`
-            );
+            this;
           this.dailyTx.total_transactions += 1;
           await this.postCheckIn(tx);
         } else {
-          console.log(data.message);
+          twist.log(data.message, this.pk, this);
         }
       })
       .catch((err) => {
@@ -262,7 +261,6 @@ export class Solana extends API {
   }
 
   async claimMysteryBox() {
-    console.log(`Building Tx`);
     logger.info(`Building TX`);
     await this.fetch(
       "/user/rewards/mystery-box/build-tx",

@@ -48,10 +48,12 @@ async function operation(acc) {
     // }
     twist.log(`Account Processing Complete`, acc, solana);
   } catch (error) {
+    let msg = error.message;
+    if (msg.includes("<!DOCTYPE html>")) {
+      msg = msg.split("<!DOCTYPE html>")[0];
+    }
     twist.log(
-      `Error ${JSON.stringify(error)}, Retrying using Account ${
-        account.indexOf(acc) + 1
-      }...`,
+      `Error ${msg}, Retrying using Account ${account.indexOf(acc) + 1}...`,
       acc
     );
 
