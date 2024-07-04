@@ -14,11 +14,12 @@ import nacl from "tweetnacl";
 import { API } from "../api/api.js";
 import logger from "../utils/logger.js";
 import twist from "../utils/twist.js";
+import { account } from "../../account.js";
 
 export class Solana extends API {
   constructor(pk) {
     const apiUrl = "https://odyssey-api.sonic.game";
-    super(apiUrl);
+    super(apiUrl, account.indexOf(pk) + 1);
     this.pk = pk;
     this.draw = 0;
     this.connection = new Connection("https://devnet.sonic.game");
