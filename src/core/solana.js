@@ -313,28 +313,35 @@ export class Solana extends API {
   async drawLottery() {
     twist.log(`Prepare for Drawing Lottery`, this.pk, this);
     logger.info(`Prepare for Drawing Lottery`);
-    await this.fetch("/user/lottery/build-tx", "GET", this.token)
-      .then(async (data) => {
-        if (data.code == 0) {
-          const transactionBuffer = Buffer.from(data.data.hash, "base64");
-          const transaction = Transaction.from(transactionBuffer);
-          // await transaction.partialSign(this.wallet);
-
-          await this.doTx(transaction)
-            .then(async (tx) => await this.postDrawLottery(tx))
-            .catch((err) => {
-              throw err;
-            });
-        } else {
-          twist.log(data.message, this.acc, this);
-          logger.error(data.message);
-          throw Error(data.message);
+    try {
+      const data = await this.fetch(
+        "/user/lottery/build-tx",
+        "GET",
+        this.token
+      );
+      if (data.code == 0) {
+        const transactionBuffer = Buffer.from(data.data.hash, "base64");
+        const transaction = Transaction.from(transactionBuffer);
+        let block;
+        try {
+          const tx = await this.doTx(transaction);
+          block = await this.postDrawLottery(tx);
+          return block; // Ensure the result is returned
+        } catch (err) {
+          twist.log(`Failed, Retrying...`, this.pk, this);
+          return await this.drawLottery();
         }
-      })
-      .catch((err) => {
-        throw err;
-      });
+      } else {
+        twist.log(data.message, this.pk, this);
+        logger.error(data.message);
+        twist.log(`Failed, Retrying...`, this.pk, this);
+        return await this.drawLottery();
+      }
+    } catch (err) {
+      return await this.drawLottery();
+    }
   }
+
   async postDrawLottery(hash) {
     twist.log(
       `Drawing Lottery for ${Config.drawAmount} Times, ${
@@ -345,26 +352,70 @@ export class Solana extends API {
     );
     logger.info(`Drawing Lottery With Hash ${hash}`);
     await Helper.delay(1000);
-    await this.fetch("/user/lottery/draw", "POST", this.token, {
-      hash: hash,
-    })
+    try {
+      const data = await this.fetch("/user/lottery/draw", "POST", this.token, {
+        hash: hash,
+      });
+      if (data.code == 0) {
+        twist.log(
+          `Successfully draw lottery ${JSON.stringify(data.data)}`,
+          this.pk,
+          this
+        );
+        logger.info("Successfully draw lottery");
+        this.draw += 1;
+        return data.data.block_number;
+      } else {
+        twist.log(data.message, this.pk, this);
+        logger.error(data.message);
+        return await this.postDrawLottery(hash);
+      }
+    } catch (err) {
+      twist.log(`Failed, Retrying...`, this.pk, this);
+      await this.postDrawLottery(hash);
+    }
+  }
+
+  async claimLottery(block) {
+    twist.log(`Claim Lottery Reward for ${block}`, this.pk, this);
+    logger.info(`Claim Lottery Reward for ${block}`);
+    await Helper.delay(1000);
+    await this.fetch(
+      `/user/lottery/draw/winner?block_number=${block}`,
+      "GET",
+      this.token
+    )
       .then(async (data) => {
         if (data.code == 0) {
-          twist.log(
-            `Successfully draw lottery ${JSON.stringify(data.data)}`,
-            this.pk,
-            this
-          );
-          logger.info("Successfully draw lottery");
-          this.draw += 1;
+          if (data.data.winner == null) {
+            logger.info(`Winner for block ${block} is not Announced`);
+            twist.log(
+              `Winner for block ${block} is not Announced, trying again after 5 Minutes`,
+              this.pk,
+              this
+            );
+            await Helper.delay(60000 * 5);
+            await this.claimLottery(block);
+          } else {
+            logger.info(
+              `Lottery Reward: Got ${data.data.reward} RINGS and ${data.data.extra_rewards} RING`
+            );
+            twist.log(
+              `Lottery Reward: Got ${data.data.reward} RINGS and ${data.data.extra_rewards} RING`,
+              this.pk,
+              this
+            );
+          }
         } else {
-          twist.log(data.message, this.acc, this);
+          twist.log(data.message, this.pk, this);
           logger.error(data.message);
           throw Error(data.message);
         }
       })
-      .catch((err) => {
-        throw err;
+      .catch(async (err) => {
+        twist.log(err.message, this.pk, this);
+        logger.error(`Claim error ${err.message}`);
+        await this.claimLottery(block);
       });
   }
 }
