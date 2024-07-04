@@ -16,10 +16,10 @@ async function operation(acc) {
     await solana.getDailyTx();
     await solana.checkIn();
     twist.log(`Starting Mass Tx`, acc, solana);
-    if (110 - solana.dailyTx.total_transactions > 0) {
-      while (solana.dailyTx.total_transactions <= 110) {
+    if (100 - solana.dailyTx.total_transactions > 0) {
+      while (solana.dailyTx.total_transactions <= 100) {
         await solana.sendSolToAddress(acc);
-        const randWait = Helper.random(2000, 5000);
+        const randWait = Helper.random(1000, 3000);
         await Helper.delay(randWait);
       }
     }
