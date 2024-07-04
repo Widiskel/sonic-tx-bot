@@ -42,9 +42,21 @@ async function operation(acc) {
     }
 
     twist.log(`Drawing lottery for 10 Times`, acc, solana);
+    const blockLottery = [];
     const drawLength = new Array(Config.drawAmount);
     for (const draw of drawLength) {
-      await solana.drawLottery();
+      const block = await solana.drawLottery();
+      blockLottery.push(block);
+    }
+    logger.info(`Collected block ${blockLottery}`);
+
+    twist.log(
+      `Waiting And Claiming all lottery reward ${blockLottery}`,
+      acc,
+      solana
+    );
+    for (const block of blockLottery) {
+      await solana.claimLottery(block);
     }
 
     // console.log(`Opening ${solana.reward.ring_monitor} Mystery box`);
@@ -62,13 +74,13 @@ async function operation(acc) {
     twist.log(
       `Error ${msg}, Retrying using Account ${
         account.indexOf(acc) + 1
-      } after 5 Second...`,
+      } after 10 Second...`,
       acc
     );
 
     logger.info(`Retrying using Account ${account.indexOf(acc) + 1}...`);
     logger.error(error);
-    await Helper.delay(5000);
+    await Helper.delay(10000);
     await operation(acc);
   }
 }
