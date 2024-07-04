@@ -13,12 +13,14 @@ import { Config } from "../config/config.js";
 import nacl from "tweetnacl";
 import { API } from "../api/api.js";
 import logger from "../utils/logger.js";
+import twist from "../utils/twist.js";
 
 export class Solana extends API {
   constructor(pk) {
     const apiUrl = "https://odyssey-api.sonic.game";
     super(apiUrl);
     this.pk = pk;
+    this.draw = 0;
     this.connection = new Connection("https://devnet.sonic.game");
   }
 
@@ -35,7 +37,7 @@ export class Solana extends API {
   }
 
   async connect() {
-    console.log(`Connecting to Sonic Odyssey`);
+    twist.log(`Connecting to Sonic Odyssey`, this.pk, this);
     logger.info(`Connecting to Sonic Odyssey`);
     await this.fetch(
       `/auth/sonic/challenge?wallet=${this.address}`,
@@ -71,8 +73,8 @@ export class Solana extends API {
           .then((authorizeRes) => {
             if (authorizeRes.code == 0) {
               this.token = authorizeRes.data.token;
-              console.log(`Connected to Sonic Odyssey`);
               logger.info(`Connected to Sonic Odyssey`);
+              twist.log(`Connected to Sonic Odyssey`, this.pk, this);
             } else {
               throw new Error(authorizeRes.message);
             }
@@ -99,11 +101,13 @@ export class Solana extends API {
   async doTx(trans) {
     try {
       logger.info(`Execute Transaction ${JSON.stringify(trans)}`);
+      twist.log(`Executing Transaction..`, this.pk, this);
       const tx = await sendAndConfirmTransaction(this.connection, trans, [
         this.wallet,
       ]);
-      console.log(`Tx Url: https://explorer.sonic.game/tx/${tx}`);
       logger.info(`Tx Url: https://explorer.sonic.game/tx/${tx}`);
+      twist.log(`Tx Url: https://explorer.sonic.game/tx/${tx}`, this.pk, this);
+      await Helper.delay(1000);
       return tx;
     } catch (error) {
       logger.error(`Transaction failed: ${error.message}`, error);
@@ -117,8 +121,8 @@ export class Solana extends API {
         Config.destAddress[Helper.random(0, Config.destAddress.length - 1)] ??
         this.address;
       const amount = Config.sendAmount;
-      console.log(`Sending ${amount} to ${destAddress}`);
       logger.info(`Sending ${amount} to ${destAddress}`);
+      twist.log(`Sending ${amount} to ${destAddress}`, this.pk, this);
       const transferInstruction = SystemProgram.transfer({
         fromPubkey: this.address,
         toPubkey: destAddress,
@@ -139,8 +143,8 @@ export class Solana extends API {
   }
 
   async checkIn() {
-    console.log(`Try to Check-in`);
     logger.info(`Try to Check-in`);
+    twist.log(`Try to Check-in`, this.pk, this);
     await this.fetch(`/user/check-in/transaction`, "GET", this.token, null)
       .then(async (data) => {
         if (data.code == 0) {
@@ -148,16 +152,18 @@ export class Solana extends API {
           const transaction = Transaction.from(transactionBuffer);
 
           const tx = await this.doTx(transaction);
-          console.log(
-            `Check-in Transaction Executed Successfully, continue with post check in process`
-          );
+
           logger.info(
             `Check-in Transaction Executed Successfully, continue with post check in process`
           );
+          twist.log,
+            `Check-in Transaction Executed Successfully, continue with post check in process`,
+            this.pk,
+            this;
           this.dailyTx.total_transactions += 1;
           await this.postCheckIn(tx);
         } else {
-          console.log(data.message);
+          twist.log(data.message, this.pk, this);
         }
       })
       .catch((err) => {
@@ -166,6 +172,7 @@ export class Solana extends API {
   }
 
   async postCheckIn(tx) {
+    twist.log(`Execute post check in process`, this.pk, this);
     await this.fetch(`/user/check-in`, "POST", this.token, {
       hash: tx,
     })
@@ -173,7 +180,7 @@ export class Solana extends API {
         if (data.code != 0) {
           throw new Error(data.message);
         } else {
-          console.log("Checked in Successfully");
+          twist.log("Checked in Successfully", this.pk, this);
         }
       })
       .catch((err) => {
@@ -183,10 +190,16 @@ export class Solana extends API {
 
   async getRewardInfo() {
     try {
+      twist.log(`Getting Reward Information`, this.pk, this);
       await this.fetch("/user/rewards/info", "GET", this.token)
         .then((data) => {
           if (data.code == 0) {
             this.reward = data.data;
+            twist.log(
+              `Successfully Get User Reward Information`,
+              this.pk,
+              this
+            );
           } else {
             throw new Error("Unable to get user reward info");
           }
@@ -200,6 +213,7 @@ export class Solana extends API {
   }
   async getDailyTx() {
     try {
+      twist.log(`Getting Daily Tx Info`, this.pk, this);
       await this.fetch(
         `/user/transactions/state/daily`,
         "GET",
@@ -211,6 +225,7 @@ export class Solana extends API {
             throw new Error(data.message);
           } else {
             this.dailyTx = data.data;
+            twist.log(`Successfully Get Daily Tx Information`, this.pk, this);
           }
         })
         .catch((err) => {
@@ -222,16 +237,24 @@ export class Solana extends API {
   }
 
   async claimTxMilestone(stage) {
-    console.log(`Claiming Tx Milestone Stage ${stage}`);
     logger.info(`Claiming Tx Milestone Stage ${stage}`);
+    twist.log(`Claiming Tx Milestone Stage ${stage}`, this.pk, this);
     await this.fetch(`/user/transactions/rewards/claim`, "POST", this.token, {
       stage: stage,
     })
       .then((data) => {
         if (data.code != 0) {
-          console.log(`Tx milestone Stage ${stage} Already Claimed`);
+          twist.log(
+            `Tx milestone Stage ${stage} Already Claimed`,
+            this.pk,
+            this
+          );
         } else {
-          console.log(`Tx milestone Stage ${stage} Claimed Successfully`);
+          twist.log(
+            `Tx milestone Stage ${stage} Claimed Successfully`,
+            this.pk,
+            this
+          );
         }
       })
       .catch((err) => {
@@ -239,48 +262,105 @@ export class Solana extends API {
       });
   }
 
-  async claimMysteryBox() {
-    console.log(`Building Tx`);
-    logger.info(`Building TX`);
-    await this.fetch(
-      "/user/rewards/mystery-box/build-tx",
-      "GET",
-      this.token,
-      undefined
-    )
+  // async claimMysteryBox() {
+  //   logger.info(`Building TX`);
+  //   await this.fetch(
+  //     "/user/rewards/mystery-box/build-tx",
+  //     "GET",
+  //     this.token,
+  //     undefined
+  //   )
+  //     .then(async (data) => {
+  //       if (data.code == 0) {
+  //         const transactionBuffer = Buffer.from(data.data.hash, "base64");
+  //         const transaction = Transaction.from(transactionBuffer);
+  //         await transaction.partialSign(this.wallet);
+
+  //         const tx = await this.doTx(transaction);
+  //         console.log(tx);
+  //         await this.openMysteryBox(tx);
+  //       } else {
+  //         console.log(data.message);
+  //         logger.error(data.message);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       throw err;
+  //     });
+  // }
+
+  // async openMysteryBox(hash) {
+  //   console.log(`Opening Mystery Box`);
+  //   logger.info(`Opening Mystery Box`);
+  //   await this.fetch("/user/rewards/mystery-box/open", "POST", this.token, {
+  //     hash: hash,
+  //   })
+  //     .then(async (data) => {
+  //       if (data.code == 0) {
+  //         console.log(
+  //           `Successfully open mystery box got ${data.data.amount} RING`
+  //         );
+  //       } else {
+  //         console.log(data.message);
+  //         logger.error(data.message);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       throw err;
+  //     });
+  // }
+
+  async drawLottery() {
+    twist.log(`Prepare for Drawing Lottery`, this.pk, this);
+    logger.info(`Prepare for Drawing Lottery`);
+    await this.fetch("/user/lottery/build-tx", "GET", this.token)
       .then(async (data) => {
         if (data.code == 0) {
           const transactionBuffer = Buffer.from(data.data.hash, "base64");
           const transaction = Transaction.from(transactionBuffer);
-          await transaction.partialSign(this.wallet);
+          // await transaction.partialSign(this.wallet);
 
-          const tx = await this.doTx(transaction);
-          console.log(tx);
-          await this.openMysteryBox(tx);
+          await this.doTx(transaction)
+            .then(async (tx) => await this.postDrawLottery(tx))
+            .catch((err) => {
+              throw err;
+            });
         } else {
-          console.log(data.message);
+          twist.log(data.message, this.acc, this);
           logger.error(data.message);
+          throw Error(data.message);
         }
       })
       .catch((err) => {
         throw err;
       });
   }
-
-  async openMysteryBox(hash) {
-    console.log(`Opening Mystery Box`);
-    logger.info(`Opening Mystery Box`);
-    await this.fetch("/user/rewards/mystery-box/open", "POST", this.token, {
+  async postDrawLottery(hash) {
+    twist.log(
+      `Drawing Lottery for ${Config.drawAmount} Times, ${
+        Config.drawAmount - this.draw
+      } Left`,
+      this.pk,
+      this
+    );
+    logger.info(`Drawing Lottery With Hash ${hash}`);
+    await Helper.delay(1000);
+    await this.fetch("/user/lottery/draw", "POST", this.token, {
       hash: hash,
     })
       .then(async (data) => {
         if (data.code == 0) {
-          console.log(
-            `Successfully open mystery box got ${data.data.amount} RING`
+          twist.log(
+            `Successfully draw lottery ${JSON.stringify(data.data)}`,
+            this.pk,
+            this
           );
+          logger.info("Successfully draw lottery");
+          this.draw += 1;
         } else {
-          console.log(data.message);
+          twist.log(data.message, this.acc, this);
           logger.error(data.message);
+          throw Error(data.message);
         }
       })
       .catch((err) => {
