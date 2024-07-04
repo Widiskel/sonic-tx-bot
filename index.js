@@ -93,6 +93,7 @@ process.on("unhandledRejection", (reason) => {
 });
 
 (async () => {
+  logger.clear();
   console.log("Sonic Bot");
   console.log("By : Widiskel");
   console.log("Note : Don't forget to run git pull to keep up-to-date");

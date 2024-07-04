@@ -28,6 +28,7 @@ im adding config file for you to configure, open `src config/config.js` and adju
 
 ```js
 sendAmount = 0.0001; //amount to send in sol
+drawAmount = 50; //draw lottery amount
 ```
 
 to configure destination address list, open `src config/address_list.js` adjust the list with yours. the bot will pick random destination address from that list to send token or it will send to its own wallet address.
