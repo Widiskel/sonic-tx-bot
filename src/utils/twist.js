@@ -27,12 +27,9 @@ class Twist {
 ================= Account ${account.indexOf(acc) + 1} =============
 Wallet Address     : ${address}
 Balance            : ${balance} SOL
-Rings              : ${ring}
 Mystery Box        : ${ring_monitor}
 Daily TX           : ${total_transactions}
-
-Status : ${msg}
-    `,
+Status : ${msg}`,
     });
   }
 

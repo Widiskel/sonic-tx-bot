@@ -74,9 +74,9 @@ async function processBot() {
 
   await Promise.all(allPromise);
 
-  console.info(`SONIC AUTO TX BOT FINISHED`);
   logger.info();
   twist.clear();
+  console.info(`SONIC AUTO TX BOT FINISHED`);
 }
 
 process.on("unhandledRejection", (reason) => {
