@@ -20,6 +20,7 @@ export class Solana extends API {
     const apiUrl = "https://odyssey-api.sonic.game";
     super(apiUrl);
     this.pk = pk;
+    this.draw = 0;
     this.connection = new Connection("https://devnet.sonic.game");
   }
 
@@ -106,6 +107,7 @@ export class Solana extends API {
       ]);
       logger.info(`Tx Url: https://explorer.sonic.game/tx/${tx}`);
       twist.log(`Tx Url: https://explorer.sonic.game/tx/${tx}`, this.pk, this);
+      await Helper.delay(1000);
       return tx;
     } catch (error) {
       logger.error(`Transaction failed: ${error.message}`, error);
@@ -260,47 +262,105 @@ export class Solana extends API {
       });
   }
 
-  async claimMysteryBox() {
-    logger.info(`Building TX`);
-    await this.fetch(
-      "/user/rewards/mystery-box/build-tx",
-      "GET",
-      this.token,
-      undefined
-    )
+  // async claimMysteryBox() {
+  //   logger.info(`Building TX`);
+  //   await this.fetch(
+  //     "/user/rewards/mystery-box/build-tx",
+  //     "GET",
+  //     this.token,
+  //     undefined
+  //   )
+  //     .then(async (data) => {
+  //       if (data.code == 0) {
+  //         const transactionBuffer = Buffer.from(data.data.hash, "base64");
+  //         const transaction = Transaction.from(transactionBuffer);
+  //         await transaction.partialSign(this.wallet);
+
+  //         const tx = await this.doTx(transaction);
+  //         console.log(tx);
+  //         await this.openMysteryBox(tx);
+  //       } else {
+  //         console.log(data.message);
+  //         logger.error(data.message);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       throw err;
+  //     });
+  // }
+
+  // async openMysteryBox(hash) {
+  //   console.log(`Opening Mystery Box`);
+  //   logger.info(`Opening Mystery Box`);
+  //   await this.fetch("/user/rewards/mystery-box/open", "POST", this.token, {
+  //     hash: hash,
+  //   })
+  //     .then(async (data) => {
+  //       if (data.code == 0) {
+  //         console.log(
+  //           `Successfully open mystery box got ${data.data.amount} RING`
+  //         );
+  //       } else {
+  //         console.log(data.message);
+  //         logger.error(data.message);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       throw err;
+  //     });
+  // }
+
+  async drawLottery() {
+    twist.log(`Prepare for Drawing Lottery`, this.pk, this);
+    logger.info(`Prepare for Drawing Lottery`);
+    await this.fetch("/user/lottery/build-tx", "GET", this.token)
       .then(async (data) => {
         if (data.code == 0) {
           const transactionBuffer = Buffer.from(data.data.hash, "base64");
           const transaction = Transaction.from(transactionBuffer);
-          await transaction.partialSign(this.wallet);
+          // await transaction.partialSign(this.wallet);
 
-          const tx = await this.doTx(transaction);
-          console.log(tx);
-          await this.openMysteryBox(tx);
+          await this.doTx(transaction)
+            .then(async (tx) => await this.postDrawLottery(tx))
+            .catch((err) => {
+              throw err;
+            });
         } else {
-          console.log(data.message);
+          twist.log(data.message, this.acc, this);
           logger.error(data.message);
+          throw Error(data.message);
         }
       })
       .catch((err) => {
         throw err;
       });
   }
-
-  async openMysteryBox(hash) {
-    console.log(`Opening Mystery Box`);
-    logger.info(`Opening Mystery Box`);
-    await this.fetch("/user/rewards/mystery-box/open", "POST", this.token, {
+  async postDrawLottery(hash) {
+    twist.log(
+      `Drawing Lottery for ${Config.drawAmount} Times, ${
+        Config.drawAmount - this.draw
+      } Left`,
+      this.pk,
+      this
+    );
+    logger.info(`Drawing Lottery With Hash ${hash}`);
+    await Helper.delay(1000);
+    await this.fetch("/user/lottery/draw", "POST", this.token, {
       hash: hash,
     })
       .then(async (data) => {
         if (data.code == 0) {
-          console.log(
-            `Successfully open mystery box got ${data.data.amount} RING`
+          twist.log(
+            `Successfully draw lottery ${JSON.stringify(data.data)}`,
+            this.pk,
+            this
           );
+          logger.info("Successfully draw lottery");
+          this.draw += 1;
         } else {
-          console.log(data.message);
+          twist.log(data.message, this.acc, this);
           logger.error(data.message);
+          throw Error(data.message);
         }
       })
       .catch((err) => {

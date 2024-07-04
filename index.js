@@ -1,4 +1,5 @@
 import { account } from "./account.js";
+import { Config } from "./src/config/config.js";
 import { Solana } from "./src/core/solana.js";
 import { Helper } from "./src/utils/helper.js";
 import logger from "./src/utils/logger.js";
@@ -40,6 +41,12 @@ async function operation(acc) {
       await solana.claimTxMilestone(stage);
     }
 
+    twist.log(`Drawing lottery for 10 Times`, acc, solana);
+    const drawLength = new Array(Config.drawAmount);
+    for (const draw of drawLength) {
+      await solana.drawLottery();
+    }
+
     // console.log(`Opening ${solana.reward.ring_monitor} Mystery box`);
     // console.log(`Opening Mystery BOX`);
     // logger.info(`Opening Mystery BOX`);
@@ -53,7 +60,9 @@ async function operation(acc) {
       msg = msg.split("<!DOCTYPE html>")[0];
     }
     twist.log(
-      `Error ${msg}, Retrying using Account ${account.indexOf(acc) + 1}...`,
+      `Error ${msg}, Retrying using Account ${
+        account.indexOf(acc) + 1
+      } after 5 Second...`,
       acc
     );
 
