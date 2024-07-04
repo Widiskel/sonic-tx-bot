@@ -41,6 +41,10 @@ to update just run `git pull` or if it failed because of unstaged commit, just r
 
 Feel free to fork and contribute adding more feature thanks.
 
+## NOTE
+
+Bot running using twister, so if you run multiple account maybe some account not showed on your terminal because it depens on your windows screen, but it still running. you can check on `app.log`.
+
 ## SUPPORT
 
 want to support me for creating another bot ?
