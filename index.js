@@ -41,31 +41,33 @@ async function operation(acc) {
       await solana.claimTxMilestone(stage);
     }
 
-    twist.log(`Drawing lottery for 10 Times`, acc, solana);
-    const blockLottery = [];
-    const drawLength = new Array(Config.drawAmount);
-    for (const draw of drawLength) {
-      const block = await solana.drawLottery();
-      blockLottery.push(block);
-    }
-    logger.info(`Collected block ${blockLottery}`);
+    if (Config.useLottery) {
+      twist.log(`Drawing lottery for 10 Times`, acc, solana);
+      const blockLottery = [];
+      const drawLength = new Array(Config.drawAmount);
+      for (const draw of drawLength) {
+        const block = await solana.drawLottery();
+        blockLottery.push(block);
+      }
+      logger.info(`Collected block ${blockLottery}`);
 
-    twist.log(
-      `Waiting And Claiming all lottery reward ${blockLottery}`,
-      acc,
-      solana
-    );
-    for (const block of blockLottery) {
-      solana.lottery = 0;
-      await solana.claimLottery(block).catch(() => {
-        logger.info(`Error while claiming lottery, skipping claim`);
+      twist.log(
+        `Waiting And Claiming all lottery reward ${blockLottery}`,
+        acc,
+        solana
+      );
+      for (const block of blockLottery) {
+        solana.lottery = 0;
+        await solana.claimLottery(block).catch(() => {
+          logger.info(`Error while claiming lottery, skipping claim`);
 
-        twist.log(
-          `Error while claiming lottery on block ${blockLottery}, skipping Claim`,
-          acc,
-          solana
-        );
-      });
+          twist.log(
+            `Error while claiming lottery on block ${blockLottery}, skipping Claim`,
+            acc,
+            solana
+          );
+        });
+      }
     }
 
     // console.log(`Opening ${solana.reward.ring_monitor} Mystery box`);

@@ -27,8 +27,13 @@ Sonic TX bot for adding more tx on chain
 im adding config file for you to configure, open `src config/config.js` and adjust config. Here some configurable variables.
 
 ```js
-sendAmount = 0.0001; //amount to send in sol
-drawAmount = 50; //draw lottery amount
+export class Config {
+  static sendAmount = 0.0001; //amount to send in sol
+  static destAddress = addressList; //address destination list
+  static drawAmount = 3; //lottery draw ammount
+  static maxRetry = 3; // max error retry for claiming
+  static useLottery = false; // if you want use lottery feature, it still experimental so it may be broken because of Sonic API is sometimes down.
+}
 ```
 
 to configure destination address list, open `src config/address_list.js` adjust the list with yours. the bot will pick random destination address from that list to send token or it will send to its own wallet address.
