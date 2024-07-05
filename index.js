@@ -56,7 +56,16 @@ async function operation(acc) {
       solana
     );
     for (const block of blockLottery) {
-      await solana.claimLottery(block);
+      solana.lottery = 0;
+      await solana.claimLottery(block).catch(() => {
+        logger.info(`Error while claiming lottery, skipping claim`);
+
+        twist.log(
+          `Error while claiming lottery on block ${blockLottery}, skipping Claim`,
+          acc,
+          solana
+        );
+      });
     }
 
     // console.log(`Opening ${solana.reward.ring_monitor} Mystery box`);
