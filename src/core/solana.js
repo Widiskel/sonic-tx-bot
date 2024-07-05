@@ -22,6 +22,7 @@ export class Solana extends API {
     super(apiUrl, account.indexOf(pk) + 1);
     this.pk = pk;
     this.draw = 0;
+    this.lottery = 0;
     this.connection = new Connection("https://devnet.sonic.game");
   }
 
@@ -389,14 +390,24 @@ export class Solana extends API {
       .then(async (data) => {
         if (data.code == 0) {
           if (data.data.winner == null) {
-            logger.info(`Winner for block ${block} is not Announced`);
-            twist.log(
-              `Winner for block ${block} is not Announced, trying again after 5 Minutes`,
-              this.pk,
-              this
-            );
-            await Helper.delay(60000 * 5);
-            await this.claimLottery(block);
+            if (this.lottery <= 3) {
+              logger.info(`Winner for block ${block} is not Announced`);
+              twist.log(
+                `Winner for block ${block} is not Announced, trying again after 5 Minutes`,
+                this.pk,
+                this
+              );
+              this.lottery += 1;
+              await Helper.delay(60000 * 5);
+              await this.claimLottery(block);
+            } else {
+              logger.info(`Winner for block ${block} is not Announced`);
+              twist.log(
+                `Winner for block ${block} not anounced after 15 minutes, skipping the claim`,
+                this.pk,
+                this
+              );
+            }
           } else {
             logger.info(
               `Lottery Reward: Got ${data.data.reward} RINGS and ${data.data.extra_rewards} RING`
@@ -414,9 +425,7 @@ export class Solana extends API {
         }
       })
       .catch(async (err) => {
-        twist.log(err.message, this.pk, this);
-        logger.error(`Claim error ${err.message}`);
-        await this.claimLottery(block);
+        throw err;
       });
   }
 }
