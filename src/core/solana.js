@@ -390,7 +390,7 @@ export class Solana extends API {
       .then(async (data) => {
         if (data.code == 0) {
           if (data.data.winner == null) {
-            if (this.lottery <= 3) {
+            if (this.lottery <= Config.maxRetry) {
               logger.info(`Winner for block ${block} is not Announced`);
               twist.log(
                 `Winner for block ${block} is not Announced, trying again after 5 Minutes`,
