@@ -13,6 +13,7 @@
   "description": "",
   "dependencies": {
     "@solana/web3.js": "^1.93.0",
+    "bs58": "^6.0.0",
     "tweetnacl": "^1.0.3",
     "twisters": "^1.1.0",
     "winston": "^3.13.0"

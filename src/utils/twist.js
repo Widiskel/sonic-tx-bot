@@ -29,7 +29,7 @@ Wallet Address     : ${address}
 Balance            : ${balance} SOL
 Mystery Box        : ${ring_monitor}
 Daily TX           : ${total_transactions}
-Status : ${msg}`,
+Status             : ${msg}`,
     });
   }
 

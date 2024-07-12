@@ -23,7 +23,7 @@ export class Solana extends API {
     this.pk = pk;
     this.draw = 0;
     this.lottery = 0;
-    this.connection = new Connection("https://devnet.sonic.game");
+    this.connection = new Connection("https://devnet.sonic.game", 'confirmed');
   }
 
   async connectWallet() {
@@ -107,6 +107,23 @@ export class Solana extends API {
       const tx = await sendAndConfirmTransaction(this.connection, trans, [
         this.wallet,
       ]);
+      logger.info(`Tx Url: https://explorer.sonic.game/tx/${tx}`);
+      twist.log(`Tx Url: https://explorer.sonic.game/tx/${tx}`, this.pk, this);
+      await Helper.delay(1000);
+      return tx;
+    } catch (error) {
+      logger.error(`Transaction failed: ${error.message}`, error);
+      throw error;
+    }
+  }
+
+  async doRawTx(trans) {
+    try {
+      logger.info(`Execute Transaction ${JSON.stringify(trans)}`);
+      twist.log(`Executing Transaction..`, this.pk, this);
+      await trans.partialSign(this.wallet);
+      const rawTransaction = trans.serialize();
+      const tx = await this.connection.sendRawTransaction(rawTransaction);
       logger.info(`Tx Url: https://explorer.sonic.game/tx/${tx}`);
       twist.log(`Tx Url: https://explorer.sonic.game/tx/${tx}`, this.pk, this);
       await Helper.delay(1000);
@@ -276,13 +293,11 @@ export class Solana extends API {
         if (data.code == 0) {
           const transactionBuffer = Buffer.from(data.data.hash, "base64");
           var transaction = Transaction.from(transactionBuffer);
-          await transaction.partialSign(this.wallet);
-
-          const tx = await this.doTx(transaction);
-          console.log(tx);
+          const tx = await this.doRawTx(transaction);
           await this.openMysteryBox(tx);
+          await Helper.delay(1000);
         } else {
-          console.log(data.message);
+          twist.log(data.message, this.pk, this);
           logger.error(data.message);
         }
       })
@@ -292,18 +307,17 @@ export class Solana extends API {
   }
 
   async openMysteryBox(hash) {
-    console.log(`Opening Mystery Box`);
+    twist.log(`Opening Mystery Box`, this.pk, this);
     logger.info(`Opening Mystery Box`);
     await this.fetch("/user/rewards/mystery-box/open", "POST", this.token, {
       hash: hash,
     })
       .then(async (data) => {
         if (data.code == 0) {
-          console.log(
-            `Successfully open mystery box got ${data.data.amount} RING`
-          );
+          twist.log(`Successfully open mystery box got ${data.data.amount} RING`, this.pk, this);
+          await Helper.delay(3000);
         } else {
-          console.log(data.message);
+          twist.log(data.message, this.pk, this);
           logger.error(data.message);
         }
       })
