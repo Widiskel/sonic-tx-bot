@@ -49,7 +49,7 @@ export class API {
       if (method !== "GET") {
         options.body = `${JSON.stringify(body)}`;
       }
-      logger.info(`Requester : Account ${this.acc}`);
+      // logger.info(`Requester : Account ${this.acc}`);
       logger.info(`${method} : ${url}`);
       logger.info(`Request Header : ${JSON.stringify(headers)}`);
       logger.info(`Request Body : ${JSON.stringify(body)}`);

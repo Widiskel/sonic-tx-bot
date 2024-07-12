@@ -73,7 +73,8 @@ async function operation(acc) {
     // console.log(`Opening ${solana.reward.ring_monitor} Mystery box`);
     // console.log(`Opening Mystery BOX`);
     // logger.info(`Opening Mystery BOX`);
-    // for (let x = 0; x < solana.reward.ring_monitor; x++) {
+    // const ringMonitor = new Array(solana.reward.ring_monitor);
+    // for (const box of ringMonitor) {
     //   await solana.claimMysteryBox();
     // }
     twist.log(`Account Processing Complete`, acc, solana);
