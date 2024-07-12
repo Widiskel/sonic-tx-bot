@@ -41,6 +41,14 @@ async function operation(acc) {
       await solana.claimTxMilestone(stage);
     }
 
+    twist.log(`Opening ${solana.reward.ring_monitor} Mystery box`, acc, solana);
+    twist.log(`Opening Mystery BOX`, acc, solana);
+    logger.info(`Opening Mystery BOX`);
+    const ringMonitor = new Array(solana.reward.ring_monitor);
+    for (const box of ringMonitor) {
+      await solana.claimMysteryBox();
+    }
+
     if (Config.useLottery) {
       twist.log(`Drawing lottery for 10 Times`, acc, solana);
       const blockLottery = [];
@@ -70,13 +78,6 @@ async function operation(acc) {
       }
     }
 
-    // console.log(`Opening ${solana.reward.ring_monitor} Mystery box`);
-    // console.log(`Opening Mystery BOX`);
-    // logger.info(`Opening Mystery BOX`);
-    // const ringMonitor = new Array(solana.reward.ring_monitor);
-    // for (const box of ringMonitor) {
-    //   await solana.claimMysteryBox();
-    // }
     twist.log(`Account Processing Complete`, acc, solana);
   } catch (error) {
     let msg = error.message;
