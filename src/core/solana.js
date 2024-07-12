@@ -18,7 +18,7 @@ import { account } from "../../account.js";
 
 export class Solana extends API {
   constructor(pk) {
-    const apiUrl = "https://odyssey-api.sonic.game";
+    const apiUrl = "https://odyssey-api-beta.sonic.game";
     super(apiUrl, account.indexOf(pk) + 1);
     this.pk = pk;
     this.draw = 0;
@@ -264,53 +264,53 @@ export class Solana extends API {
       });
   }
 
-  // async claimMysteryBox() {
-  //   logger.info(`Building TX`);
-  //   await this.fetch(
-  //     "/user/rewards/mystery-box/build-tx",
-  //     "GET",
-  //     this.token,
-  //     undefined
-  //   )
-  //     .then(async (data) => {
-  //       if (data.code == 0) {
-  //         const transactionBuffer = Buffer.from(data.data.hash, "base64");
-  //         const transaction = Transaction.from(transactionBuffer);
-  //         await transaction.partialSign(this.wallet);
+  async claimMysteryBox() {
+    logger.info(`Building TX`);
+    await this.fetch(
+      "/user/rewards/mystery-box/build-tx",
+      "GET",
+      this.token,
+      undefined
+    )
+      .then(async (data) => {
+        if (data.code == 0) {
+          const transactionBuffer = Buffer.from(data.data.hash, "base64");
+          var transaction = Transaction.from(transactionBuffer);
+          await transaction.partialSign(this.wallet);
 
-  //         const tx = await this.doTx(transaction);
-  //         console.log(tx);
-  //         await this.openMysteryBox(tx);
-  //       } else {
-  //         console.log(data.message);
-  //         logger.error(data.message);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       throw err;
-  //     });
-  // }
+          const tx = await this.doTx(transaction);
+          console.log(tx);
+          await this.openMysteryBox(tx);
+        } else {
+          console.log(data.message);
+          logger.error(data.message);
+        }
+      })
+      .catch((err) => {
+        throw err;
+      });
+  }
 
-  // async openMysteryBox(hash) {
-  //   console.log(`Opening Mystery Box`);
-  //   logger.info(`Opening Mystery Box`);
-  //   await this.fetch("/user/rewards/mystery-box/open", "POST", this.token, {
-  //     hash: hash,
-  //   })
-  //     .then(async (data) => {
-  //       if (data.code == 0) {
-  //         console.log(
-  //           `Successfully open mystery box got ${data.data.amount} RING`
-  //         );
-  //       } else {
-  //         console.log(data.message);
-  //         logger.error(data.message);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       throw err;
-  //     });
-  // }
+  async openMysteryBox(hash) {
+    console.log(`Opening Mystery Box`);
+    logger.info(`Opening Mystery Box`);
+    await this.fetch("/user/rewards/mystery-box/open", "POST", this.token, {
+      hash: hash,
+    })
+      .then(async (data) => {
+        if (data.code == 0) {
+          console.log(
+            `Successfully open mystery box got ${data.data.amount} RING`
+          );
+        } else {
+          console.log(data.message);
+          logger.error(data.message);
+        }
+      })
+      .catch((err) => {
+        throw err;
+      });
+  }
 
   async drawLottery() {
     twist.log(`Prepare for Drawing Lottery`, this.pk, this);
