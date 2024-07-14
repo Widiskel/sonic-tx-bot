@@ -23,7 +23,8 @@ export class Solana extends API {
     this.pk = pk;
     this.draw = 0;
     this.lottery = 0;
-    this.connection = new Connection("https://devnet.sonic.game", 'confirmed');
+    this.currentError = 0;
+    this.connection = new Connection("https://devnet.sonic.game", "confirmed");
   }
 
   async connectWallet() {
@@ -117,13 +118,15 @@ export class Solana extends API {
     }
   }
 
+  /** @param {Transaction} trans */
   async doRawTx(trans) {
     try {
       logger.info(`Execute Transaction ${JSON.stringify(trans)}`);
       twist.log(`Executing Transaction..`, this.pk, this);
-      await trans.partialSign(this.wallet);
       const rawTransaction = trans.serialize();
       const tx = await this.connection.sendRawTransaction(rawTransaction);
+      twist.log(`Confirming Transaction..`, this.pk, this);
+      await this.confirmTx(tx);
       logger.info(`Tx Url: https://explorer.sonic.game/tx/${tx}`);
       twist.log(`Tx Url: https://explorer.sonic.game/tx/${tx}`, this.pk, this);
       await Helper.delay(1000);
@@ -131,6 +134,26 @@ export class Solana extends API {
     } catch (error) {
       logger.error(`Transaction failed: ${error.message}`, error);
       throw error;
+    }
+  }
+
+  /** @param {Transaction} trans */
+  async confirmTx(signature) {
+    try {
+      await this.connection.confirmTransaction(signature, "finalized");
+
+      twist.log(`Transaction Confirmed`, this.pk, this);
+      await Helper.delay(1000);
+      return tx;
+    } catch (error) {
+      logger.error(`Transaction failed: ${error.message}`, error);
+      if (this.currentError < 3) {
+        this.currentError += 1;
+        this.confirmTx(signature);
+      } else {
+        this.currentError = 0;
+        throw Error("Transaction not confirmed and max retry reached");
+      }
     }
   }
 
@@ -292,7 +315,8 @@ export class Solana extends API {
       .then(async (data) => {
         if (data.code == 0) {
           const transactionBuffer = Buffer.from(data.data.hash, "base64");
-          var transaction = Transaction.from(transactionBuffer);
+          const transaction = Transaction.from(transactionBuffer);
+          transaction.partialSign(this.wallet);
           const tx = await this.doRawTx(transaction);
           await this.openMysteryBox(tx);
           await Helper.delay(1000);
@@ -314,7 +338,12 @@ export class Solana extends API {
     })
       .then(async (data) => {
         if (data.code == 0) {
-          twist.log(`Successfully open mystery box got ${data.data.amount} RING`, this.pk, this);
+          twist.log(
+            `Successfully open mystery box got ${data.data.amount} RING`,
+            this.pk,
+            this
+          );
+          this.reward.ring_monitor -= 1;
           await Helper.delay(3000);
         } else {
           twist.log(data.message, this.pk, this);

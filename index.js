@@ -42,8 +42,8 @@ async function operation(acc) {
     }
 
     twist.log(`Opening ${solana.reward.ring_monitor} Mystery box`, acc, solana);
-    twist.log(`Opening Mystery BOX`, acc, solana);
-    logger.info(`Opening Mystery BOX`);
+    twist.log(`Claiming Mystery BOX`, acc, solana);
+    logger.info(`Claiming Mystery BOX`);
     const ringMonitor = new Array(solana.reward.ring_monitor);
     for (const box of ringMonitor) {
       await solana.claimMysteryBox();
