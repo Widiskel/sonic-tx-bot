@@ -150,6 +150,11 @@ export class Solana extends API {
       logger.error(`Transaction failed: ${error.message}`, error);
       if (this.currentError < Config.maxRetry) {
         this.currentError += 1;
+        twist.log(
+          `Transaction Not Confirmer after 30 Second, Retrying...`,
+          this.pk,
+          this
+        );
         this.confirmTx(signature);
       } else {
         this.currentError = 0;
@@ -347,7 +352,7 @@ export class Solana extends API {
           );
           this.reward.ring_monitor -= 1;
           this.reward.ring += data.data.amount;
-          await Helper.delay(2000);
+          await Helper.delay(5000);
         } else {
           twist.log(data.message, this.pk, this);
           logger.error(data.message);
