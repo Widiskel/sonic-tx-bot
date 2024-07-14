@@ -8,6 +8,7 @@ Sonic TX bot for adding more tx on chain
 - Auto TX until 100 Times
 - Auto Claim TX Milestone
 - Auto Draw Lottery
+- Auto Opening Mystery Box
 
 ## PREREQUISITE
 
