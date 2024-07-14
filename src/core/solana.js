@@ -144,7 +144,6 @@ export class Solana extends API {
 
       twist.log(`Transaction Confirmed`, this.pk, this);
       await Helper.delay(1000);
-      return tx;
     } catch (error) {
       logger.error(`Transaction failed: ${error.message}`, error);
       if (this.currentError < 3) {
