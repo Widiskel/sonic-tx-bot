@@ -149,19 +149,21 @@ export class Solana extends API {
 
       logger.info(`Transaction Confirmed`);
       twist.log(`Transaction Confirmed`, this.pk, this);
-      await Helper.delay(1000);
+      await Helper.delay(2000);
     } catch (error) {
       logger.error(`Transaction failed: ${error.message}`, error);
       if (this.currentError < Config.maxRetry) {
         this.currentError += 1;
         twist.log(
-          `Transaction Not Confirmer after 30 Second, Retrying...`,
+          `Transaction Not Confirmed after 30 Second, Retrying...`,
           this.pk,
           this
         );
+        await Helper.delay(2000);
         this.confirmTx(signature);
       } else {
         this.currentError = 0;
+        await Helper.delay(2000);
         throw Error("Transaction not confirmed and max retry reached");
       }
     }
