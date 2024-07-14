@@ -125,7 +125,6 @@ export class Solana extends API {
       twist.log(`Executing Transaction..`, this.pk, this);
       const rawTransaction = trans.serialize();
       const tx = await this.connection.sendRawTransaction(rawTransaction);
-      twist.log(`Confirming Transaction..`, this.pk, this);
       await this.confirmTx(tx);
       logger.info(`Tx Url: https://explorer.sonic.game/tx/${tx}`);
       twist.log(`Tx Url: https://explorer.sonic.game/tx/${tx}`, this.pk, this);
@@ -140,13 +139,16 @@ export class Solana extends API {
   /** @param {Transaction} trans */
   async confirmTx(signature) {
     try {
+      logger.info(`Confirming Transaction...`);
+      twist.log(`Confirming Transaction..`, this.pk, this);
       await this.connection.confirmTransaction(signature, "finalized");
 
+      logger.info(`Transaction Confirmed`);
       twist.log(`Transaction Confirmed`, this.pk, this);
       await Helper.delay(1000);
     } catch (error) {
       logger.error(`Transaction failed: ${error.message}`, error);
-      if (this.currentError < 3) {
+      if (this.currentError < Config.maxRetry) {
         this.currentError += 1;
         this.confirmTx(signature);
       } else {
@@ -304,7 +306,8 @@ export class Solana extends API {
   }
 
   async claimMysteryBox() {
-    logger.info(`Building TX`);
+    twist.log(`Build Tx for Claiming Mystery BOX`, this.pk, this);
+    logger.info(`Build Tx for Claiming Mystery BOX`);
     await this.fetch(
       "/user/rewards/mystery-box/build-tx",
       "GET",
@@ -343,7 +346,8 @@ export class Solana extends API {
             this
           );
           this.reward.ring_monitor -= 1;
-          await Helper.delay(3000);
+          this.reward.ring += data.data.amount;
+          await Helper.delay(2000);
         } else {
           twist.log(data.message, this.pk, this);
           logger.error(data.message);

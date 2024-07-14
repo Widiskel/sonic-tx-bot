@@ -17,7 +17,7 @@ class Twist {
     const address = solana.address ?? "-";
     const balance = solana.balance ?? "-";
     const reward = solana.reward ?? {};
-    const ring = reward.ring ?? "-";
+    const ring = reward.ring ?? "?";
     const ring_monitor = reward.ring_monitor ?? "-";
     const dailyTx = solana.dailyTx ?? {};
     const total_transactions = dailyTx.total_transactions ?? "-";
@@ -26,7 +26,7 @@ class Twist {
       text: `
 ================= Account ${account.indexOf(acc) + 1} =============
 Wallet Address     : ${address}
-Balance            : ${balance} SOL
+Balance            : ${balance} SOL | ${ring} RING
 Mystery Box        : ${ring_monitor}
 Daily TX           : ${total_transactions}
 Status             : ${msg}`,
