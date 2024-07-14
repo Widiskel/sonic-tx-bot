@@ -140,7 +140,11 @@ export class Solana extends API {
   async confirmTx(signature) {
     try {
       logger.info(`Confirming Transaction...`);
-      twist.log(`Confirming Transaction..`, this.pk, this);
+      twist.log(
+        `Confirming Transaction, Estimated take 30 Second..`,
+        this.pk,
+        this
+      );
       await this.connection.confirmTransaction(signature, "finalized");
 
       logger.info(`Transaction Confirmed`);
