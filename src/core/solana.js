@@ -121,8 +121,8 @@ export class Solana extends API {
   /** @param {Transaction} trans */
   async doRawTx(trans) {
     try {
-      logger.info(`Execute Transaction ${JSON.stringify(trans)}`);
-      twist.log(`Executing Transaction..`, this.pk, this);
+      logger.info(`Execute Raw Transaction ${JSON.stringify(trans)}`);
+      twist.log(`Executing Raw Transaction..`, this.pk, this);
       const rawTransaction = trans.serialize();
       const tx = await this.connection.sendRawTransaction(rawTransaction);
       await this.confirmTx(tx);

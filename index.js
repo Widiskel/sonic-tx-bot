@@ -4,7 +4,9 @@ import { Solana } from "./src/core/solana.js";
 import { Helper } from "./src/utils/helper.js";
 import logger from "./src/utils/logger.js";
 import twist from "./src/utils/twist.js";
+import input from "input";
 
+let mode = 1;
 async function operation(acc) {
   const solana = new Solana(acc);
   try {
@@ -44,8 +46,22 @@ async function operation(acc) {
     twist.log(`Opening ${solana.reward.ring_monitor} Mystery box`, acc, solana);
 
     const ringMonitor = new Array(solana.reward.ring_monitor);
+    let claimError = false;
     for (const box of ringMonitor) {
-      await solana.claimMysteryBox();
+      await solana.claimMysteryBox().catch(async (err) => {
+        if (err.message.includes("custom program error")) {
+          claimError = true;
+          twist.log(
+            `Error while claiming mystery box, posible Sonic program error, skipping open box`,
+            acc,
+            solana
+          );
+          await Helper.delay(3000);
+        }
+      });
+      if (claimError) {
+        break;
+      }
     }
 
     if (Config.useLottery) {
@@ -77,7 +93,16 @@ async function operation(acc) {
       }
     }
 
-    twist.log(`Account Processing Complete`, acc, solana);
+    if (mode == 1) {
+      twist.log(`Account Processing Complete`, acc, solana);
+    } else {
+      twist.log(
+        `Account Processing Complete, Continue using next account after 3 Second delay`,
+        acc,
+        solana
+      );
+      await Helper.delay(3000);
+    }
   } catch (error) {
     let msg = error.message;
     if (msg.includes("<!DOCTYPE html>")) {
@@ -101,14 +126,23 @@ async function operation(acc) {
 async function processBot() {
   logger.info(`SONIC AUTO TX BOT STARTED`);
   console.info(`SONIC AUTO TX BOT STARTED`);
-  const allPromise = account.map(async (pk) => {
-    await operation(pk);
-  });
 
-  await Promise.all(allPromise);
+  if (mode == 1) {
+    const allPromise = account.map(async (pk) => {
+      await operation(pk);
+    });
 
-  logger.info();
-  twist.clear();
+    await Promise.all(allPromise);
+    logger.info();
+    twist.clear();
+  } else {
+    for (const pk of account) {
+      await operation(pk);
+      logger.info();
+      twist.clear();
+    }
+  }
+
   console.info(`SONIC AUTO TX BOT FINISHED`);
 }
 
@@ -116,11 +150,31 @@ process.on("unhandledRejection", (reason) => {
   throw Error("Unhandled Exception : " + reason);
 });
 
+async function onBoarding() {
+  try {
+    let ctx =
+      "Welcome to Sonic TX Bot \nBy : Widiskel \n \nLets getting started.\n \nChoose Your Run Option:\n";
+    ctx +=
+      "\n \n1. Mass Runner. \n2. One By One Runner.\n \nInput your choice :";
+    const choice = await input.text(ctx);
+    if (choice == 1 || choice == 2) {
+      mode = choice;
+      console.log(mode);
+      await processBot();
+    } else {
+      console.error("Invalid input, Please try again");
+      await onBoarding();
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
 (async () => {
   logger.clear();
   console.log("Sonic Bot");
   console.log("By : Widiskel");
   console.log("Note : Don't forget to run git pull to keep up-to-date");
   console.log();
-  await processBot();
+  await onBoarding();
 })();
