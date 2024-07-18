@@ -45,12 +45,9 @@ async function operation(acc) {
 
     twist.log(`Opening ${solana.reward.ring_monitor} Mystery box`, acc, solana);
 
-    const ringMonitor = new Array(solana.reward.ring_monitor);
-    // let claimError = false;
-    for (const box of ringMonitor) {
+    while (solana.reward.ring_monitor != 0) {
       await solana.claimMysteryBox().catch(async (err) => {
         if (err.message.includes("custom program error")) {
-          // claimError = true;
           twist.log(
             `Error while claiming mystery box, posible Sonic program error, skipping open box`,
             acc,
@@ -59,9 +56,6 @@ async function operation(acc) {
           await Helper.delay(3000);
         }
       });
-      // if (claimError) {
-      //   break;
-      // }
     }
 
     if (Config.useLottery) {
