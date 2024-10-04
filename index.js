@@ -138,6 +138,8 @@ async function processBot() {
   }
 
   console.info(`SONIC AUTO TX BOT FINISHED`);
+  await Helper.delay(60000 * 60 * 24);
+  await processBot();
 }
 
 process.on("unhandledRejection", (reason) => {
