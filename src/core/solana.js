@@ -160,7 +160,7 @@ export class Solana extends API {
           this
         );
         await Helper.delay(2000);
-        this.confirmTx(signature);
+        await this.confirmTx(signature);
       } else {
         this.currentError = 0;
         await Helper.delay(2000);
