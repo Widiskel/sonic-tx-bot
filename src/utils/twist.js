@@ -1,6 +1,7 @@
 import { Twisters } from "twisters";
 import { account } from "../../account.js";
 import { Solana } from "../core/solana.js";
+import logger from "./logger.js";
 
 class Twist {
   constructor() {
@@ -13,7 +14,13 @@ class Twist {
    * @param {Solana} solana
    * @param {string} msg
    */
-  log(msg = "", acc = "", solana = new Solana(acc)) {
+  log(msg = "", acc = "", solana = new Solana(acc), delay) {
+    const accIdx = account.indexOf(acc);
+    if (delay == undefined) {
+      logger.info(`Account ${accIdx + 1} - ${msg}`);
+      delay = "-";
+    }
+
     const address = solana.address ?? "-";
     const balance = solana.balance ?? "-";
     const reward = solana.reward ?? {};
@@ -29,7 +36,11 @@ Wallet Address     : ${address}
 Balance            : ${balance} SOL | ${ring} RING
 Mystery Box        : ${ring_monitor}
 Daily TX           : ${total_transactions}
-Status             : ${msg}`,
+
+Status             : ${msg}
+Delay : ${delay}
+==============================================
+`,
     });
   }
 
