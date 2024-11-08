@@ -333,7 +333,7 @@ export class Solana extends API {
       this
     );
     await this.fetch(
-      `/testnet-v1/user/transactions/milestone/claim/${stage}`,
+      `/testnet-v1/user/transactions/rewards/claim/${stage}`,
       "GET",
       this.token,
       null
