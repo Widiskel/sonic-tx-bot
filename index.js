@@ -1,31 +1,29 @@
 import { account } from "./account.js";
-import { Config } from "./src/config/config.js";
+import { proxyList } from "./proxy_list.js";
 import { Solana } from "./src/core/solana.js";
 import { Helper } from "./src/utils/helper.js";
 import logger from "./src/utils/logger.js";
-import twist from "./src/utils/twist.js";
-import input from "input";
 
-let mode = 1;
-async function operation(acc) {
-  const solana = new Solana(acc);
+async function operation(acc, proxy) {
+  const solana = new Solana(acc, proxy);
   try {
     await solana.connectWallet();
     await solana.checkBalance();
     await solana.connect();
-    await Helper.delay(1000);
-    twist.log(`Getting Wallet Balance Information`, acc, solana);
+    await Helper.delay(500, acc, `Getting Wallet Balance Information`, solana);
     await solana.getRewardInfo();
     await solana.getDailyTx();
     await solana.checkIn();
-    twist.log(`Starting Mass Tx`, acc, solana);
+    await Helper.delay(500, acc, `Starting Mass Tx`, solana);
+
     if (100 - solana.dailyTx.total_transactions > 0) {
       while (solana.dailyTx.total_transactions <= 100) {
         await solana.sendSolToAddress(acc);
         const randWait = Helper.random(1000, 3000);
-        await Helper.delay(randWait);
+        await Helper.delay(randWait, acc, "Delaying before do next tx", solana);
       }
     }
+
     await solana.getDailyTx();
 
     const claimableStage = [];
@@ -43,134 +41,104 @@ async function operation(acc) {
       await solana.claimTxMilestone(stage);
     }
 
-    twist.log(`Opening ${solana.reward.ring_monitor} Mystery box`, acc, solana);
+    await Helper.delay(
+      500,
+      acc,
+      `Opening ${solana.reward.ring_monitor} Mystery box`,
+      solana
+    );
 
     while (solana.reward.ring_monitor != 0) {
       await solana.claimMysteryBox().catch(async (err) => {
         if (err.message.includes("custom program error")) {
-          twist.log(
-            `Error while claiming mystery box, posible Sonic program error, skipping open box`,
+          await Helper.delay(
+            3000,
             acc,
+            `Error while claiming mystery box, possible Sonic program error, skipping open box`,
             solana
           );
-          await Helper.delay(3000);
         }
       });
     }
 
-    if (Config.useLottery) {
-      twist.log(`Drawing lottery for 10 Times`, acc, solana);
-      const blockLottery = [];
-      const drawLength = new Array(Config.drawAmount);
-      for (const draw of drawLength) {
-        const block = await solana.drawLottery();
-        blockLottery.push(block);
-      }
-      logger.info(`Collected block ${blockLottery}`);
-
-      twist.log(
-        `Waiting And Claiming all lottery reward ${blockLottery}`,
-        acc,
-        solana
-      );
-      for (const block of blockLottery) {
-        solana.lottery = 0;
-        await solana.claimLottery(block).catch(() => {
-          logger.info(`Error while claiming lottery, skipping claim`);
-
-          twist.log(
-            `Error while claiming lottery on block ${blockLottery}, skipping Claim`,
-            acc,
-            solana
-          );
-        });
-      }
-    }
-
-    if (mode == 1) {
-      twist.log(`Account Processing Complete`, acc, solana);
-    } else {
-      twist.log(
-        `Account Processing Complete, Continue using next account after 3 Second delay`,
-        acc,
-        solana
-      );
-      await Helper.delay(3000);
-    }
+    await Helper.delay(
+      60000 * 60 * 24,
+      acc,
+      `Account Processing Complete, Delaying for 24 H`,
+      solana
+    );
   } catch (error) {
     let msg = error.message;
     if (msg.includes("<!DOCTYPE html>")) {
       msg = msg.split("<!DOCTYPE html>")[0];
     }
-    twist.log(
+    await Helper.delay(
+      500,
+      acc,
       `Error ${msg}, Retrying using Account ${
         account.indexOf(acc) + 1
       } after 10 Second...`,
-      acc
+      solana
     );
 
     logger.info(`Retrying using Account ${account.indexOf(acc) + 1}...`);
     logger.error(error);
     await Helper.delay(10000);
-    await operation(acc);
+    await operation(acc, proxy);
   }
-}
-
-/** Processing Bot */
-async function processBot() {
-  logger.info(`SONIC AUTO TX BOT STARTED`);
-  console.info(`SONIC AUTO TX BOT STARTED`);
-
-  if (mode == 1) {
-    const allPromise = account.map(async (pk) => {
-      await operation(pk);
-    });
-
-    await Promise.all(allPromise);
-    logger.info();
-    twist.clear();
-  } else {
-    for (const pk of account) {
-      await operation(pk);
-      logger.info();
-      twist.clear();
-    }
-  }
-
-  console.info(`SONIC AUTO TX BOT FINISHED`);
-  await Helper.delay(60000 * 60 * 24);
-  await processBot();
 }
 
 process.on("unhandledRejection", (reason) => {
   throw Error("Unhandled Exception : " + reason);
 });
 
-async function onBoarding() {
-  try {
-    let ctx =
-      "Welcome to Sonic TX Bot \nBy : Widiskel \n \nLets getting started.\n \nChoose Your Run Option:\n";
-    ctx +=
-      "\n \n1. Mass Runner. \n2. One By One Runner.\n \nInput your choice :";
-    const choice = await input.text(ctx);
-    if (choice == 1 || choice == 2) {
-      mode = choice;
-      console.log(mode);
-      await processBot();
-    } else {
-      console.error("Invalid input, Please try again");
-      await onBoarding();
+async function startBot() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      logger.info(`BOT STARTED`);
+      if (account.length == 0)
+        throw Error("Please input your account first on account.js file");
+
+      if (proxyList.length != account.length && proxyList.length != 0)
+        throw Error(
+          `You Have ${account.length} Accounts But Provide ${proxyList.length}`
+        );
+
+      const promiseList = [];
+
+      for (const acc of account) {
+        const accIdx = account.indexOf(acc);
+        const proxy = proxyList[accIdx];
+        promiseList.push(operation(acc, proxy));
+      }
+
+      await Promise.all(promiseList);
+      resolve();
+    } catch (error) {
+      logger.info(`BOT STOPPED`);
+      logger.error(JSON.stringify(error));
+      reject(error);
     }
-  } catch (error) {
-    throw error;
-  }
+  });
 }
 
 (async () => {
-  logger.clear();
-  console.log("Sonic Bot");
-  console.log("By : Widiskel");
-  console.log("Note : Don't forget to run git pull to keep up-to-date");
-  console.log();
-  await onBoarding();
+  try {
+    logger.clear();
+    logger.info("");
+    logger.info("Application Started");
+    console.log("EVM TX DEPLOYER BOT");
+    console.log();
+    console.log("By : Widiskel");
+    console.log("Follow On : https://github.com/Widiskel");
+    console.log("Join Channel : https://t.me/skeldrophunt");
+    console.log("Dont forget to run git pull to keep up to date");
+    console.log();
+    console.log();
+    Helper.showSkelLogo();
+    await startBot();
+  } catch (error) {
+    console.log("Error During executing bot", error);
+    await startBot();
+  }
 })();

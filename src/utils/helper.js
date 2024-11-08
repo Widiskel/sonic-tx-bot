@@ -1,4 +1,5 @@
 import bs58 from "bs58";
+import twist from "./twist.js";
 
 export class Helper {
   static base58decoder(base58PrivateKey) {
@@ -10,11 +11,45 @@ export class Helper {
     }
   }
 
-  static async delay(ms) {
-    return new Promise((resolve) => {
-      setTimeout(resolve, ms);
+  static delay = (ms, acc, msg, obj) => {
+    return new Promise(async (resolve) => {
+      let remainingMilliseconds = ms;
+
+      if (acc != undefined) {
+        await twist.log(msg, acc, obj, `Delaying for ${this.msToTime(ms)}`);
+      } else {
+        twist.info(`Delaying for ${this.msToTime(ms)}`);
+      }
+
+      const interval = setInterval(async () => {
+        remainingMilliseconds -= 1000;
+        if (acc != undefined) {
+          await twist.log(
+            msg,
+            acc,
+            obj,
+            `Delaying for ${this.msToTime(remainingMilliseconds)}`
+          );
+        } else {
+          twist.info(`Delaying for ${this.msToTime(remainingMilliseconds)}`);
+        }
+
+        if (remainingMilliseconds <= 0) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 1000);
+
+      setTimeout(async () => {
+        clearInterval(interval);
+        await twist.clearInfo();
+        if (acc) {
+          await twist.log(msg, acc, obj);
+        }
+        resolve();
+      }, ms);
     });
-  }
+  };
 
   static random(min, max) {
     const rand = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -32,5 +67,55 @@ export class Helper {
     ];
     return list_useragent[Math.floor(Math.random() * list_useragent.length)];
   }
-}
 
+  static msToTime(milliseconds) {
+    const hours = Math.floor(milliseconds / (1000 * 60 * 60));
+    const remainingMillisecondsAfterHours = milliseconds % (1000 * 60 * 60);
+    const minutes = Math.floor(remainingMillisecondsAfterHours / (1000 * 60));
+    const remainingMillisecondsAfterMinutes =
+      remainingMillisecondsAfterHours % (1000 * 60);
+    const seconds = Math.round(remainingMillisecondsAfterMinutes / 1000);
+
+    return `${hours} Hours ${minutes} Minutes ${seconds} Seconds`;
+  }
+
+  static showSkelLogo() {
+    console.log(`
+                                                          
+                      ...                                 
+                     .;:.                                 
+                    .;ol,.                                
+                   .;ooc:'                                
+            ..    .;ooccc:'.    ..                        
+          .',....'cdxlccccc;.....,'.                      
+         .;;..'';clolccccccc:,''..;;.                     
+        ':c'..':cccccccccccccc;...'c:.                    
+       ':cc,.'ccccccccccccccccc:..;cc:'                   
+    ...:cc;.':cccccccccccccccccc:..:cc:...                
+   .;';cc;.':;;:cccccccccccccc:;;;'.;cc,,;.               
+  .cc':c:.',.....;cccccccccc;.....,..:c:'c:               
+  ,x:'cc;.,'     .':cccccc:'.     ',.;cc':x'              
+  lO,'cc;.;,       .;cccc:.       ,;.;cc';0l              
+ .o0;.;c;.,:'......',''''''......':,.;c;.:0l.             
+ .lxl,.;,..;c::::;:,.    .,:;::::c;..,;.,oxl.             
+ .lkxOl..  ..'..;::'..''..'::;..'..  ..c0xkl.             
+  .cKMx.        .;c:;:cc:;:c:.        .xMKc.              
+    ;KX:         ;o::l:;cc;o:.        ;KK;                
+     :KK:.       ,d,cd,'ol'o:       .:0K:                 
+      ;0NOl:;:loo;. ... .. .;ldlc::lkN0:                  
+       .lONNNKOx0Xd,;;'.,:,lKKkk0XNN0o.                   
+         .','.. .lX0doooodOXd.  .','.                     
+                 .,okkddxkd;.                             
+                    'oxxd;.                               
+   ........................................                              
+   .OWo  xNd lox  xxl Ald   xoc dakkkkkxsx.              
+   .OWo  o0W cXW  dM0 MMN   lNK laddKMNkso.               
+   .kMKoxsNN oWX  dW0 MMMWO lWK    axM0   .                
+   .OMWXNaMX dM0  kM0 MMKxNXKW0    axMk   .                 
+   .OMk  dWK oWX XWdx Mxx  XMMO    akMx   .                 
+   'OWo  dM0 'kNNXNNd DMD   OWk    aoWd   .                 
+   ........................................                 
+                                                                      
+`);
+  }
+}

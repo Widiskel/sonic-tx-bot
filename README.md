@@ -4,12 +4,13 @@ Sonic TX bot for adding more tx on chain
 
 ## BOT FEATURE
 
+- Support PK and SEED
+- Proxy Support
 - Auto Check In
 - Auto TX until 100 Times
 - Auto Claim TX Milestone
-- Auto Draw Lottery
 - Auto Opening Mystery Box
-- Run Account 1 by 1 or Mass run (posible got forbidden if to much account)
+- Support on testnet-v1
 
 ## PREREQUISITE
 
@@ -21,8 +22,10 @@ Sonic TX bot for adding more tx on chain
 - run `git clone https://github.com/Widiskel/sonic-tx-bot.git`
 - run `cd sonic-tx-bot`
 - run `npm install`
-- run `cp account_tmp.js account.js`
+- run `cp account_tmp.js account.js && cp proxy_list_tmp.js proxy_list.js` 
 - fill up account.js `nano account.js` fill with your account private key
+- fill up proxy_list.js `nano proxy_list.js` fill with your proxy list
+- npm run start
 
 ## CONFIGURATION
 
@@ -32,9 +35,7 @@ im adding config file for you to configure, open `src config/config.js` and adju
 export class Config {
   static sendAmount = 0.0001; //amount to send in sol
   static destAddress = addressList; //address destination list
-  static drawAmount = 3; //lottery draw ammount
   static maxRetry = 3; // max error retry for claiming
-  static useLottery = false; // if you want use lottery feature, it still experimental so it may be broken because of Sonic API is sometimes down.
 }
 ```
 

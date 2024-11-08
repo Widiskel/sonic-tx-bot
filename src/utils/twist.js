@@ -33,8 +33,25 @@ Status             : ${msg}`,
     });
   }
 
-  clear() {
-    this.twisters.flush();
+  /**
+   * @param {string} msg
+   */
+  info(msg = "") {
+    this.twisters.put(2, {
+      text: `
+==============================================
+Info : ${msg}
+==============================================`,
+    });
+    return;
+  }
+
+  clearInfo() {
+    this.twisters.remove(2);
+  }
+
+  clear(acc) {
+    this.twisters.remove(acc);
   }
 }
 export default new Twist();
