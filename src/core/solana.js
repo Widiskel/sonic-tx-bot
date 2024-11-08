@@ -333,10 +333,12 @@ export class Solana extends API {
       this
     );
     await this.fetch(
-      `/testnet-v1/user/transactions/rewards/claim/${stage}`,
-      "GET",
+      `/testnet-v1/user/transactions/rewards/claim`,
+      "POST",
       this.token,
-      null
+      {
+        stage: stage,
+      }
     )
       .then(async (data) => {
         if (data.code == 0) {
