@@ -62,6 +62,7 @@ async function operation(acc, proxy) {
           );
         }
       });
+      await this.getRewardInfo();
     }
 
     await Helper.delay(

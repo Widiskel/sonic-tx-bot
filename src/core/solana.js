@@ -392,14 +392,11 @@ export class Solana extends API {
       .then(async (data) => {
         if (data.code == 0) {
           await Helper.delay(
-            1000,
+            3000,
             this.pk,
             `Successfully open mystery box got ${data.data.amount} RING`,
             this
           );
-          this.reward.ring_monitor -= 1;
-          this.reward.ring += data.data.amount;
-          await Helper.delay(5000);
         } else {
           await Helper.delay(1000, this.pk, data.message, this);
           logger.error(data.message);
