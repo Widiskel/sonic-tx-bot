@@ -44,7 +44,7 @@ async function operation(acc, proxy) {
       await solana.claimTxMilestone(stage);
     }
 
-    await this.getRewardInfo();
+    await solana.getRewardInfo();
     await Helper.delay(
       500,
       acc,
